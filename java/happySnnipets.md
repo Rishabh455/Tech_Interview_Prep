@@ -18,3 +18,28 @@ class Main {
         System.out.println("Try clicking the Run button.");
     }
 }
+
+
+
+//functional interfaces in one code
+// Online Java Compiler (Editor)
+// Write and run Java online using this edit
+import java.util.*;
+import java.util.function.*;
+class Main {
+    public static void main(String[] args) {
+        System.out.println("Try clicking the Run button.");
+        Predicate<Integer>isEven=n->n%2==0;//filter()
+        Function<String,Integer>length=s->s.length();//map()
+        Consumer<String>print=System.out::println;//forEach()
+        Supplier<String>supplier=()->"Java";//Stream.generate()
+        Optional<String>name=Optional.ofNullable(null);
+        System.out.println(length.apply("java"));
+        System.out.println(isEven.test(14));
+        print.accept("java");
+        System.out.println(supplier.get());
+        System.out.println(name.orElse("def_Value"));
+        System.out.println(name.get());
+        System.out.println(name.orElseThrow(()->new RuntimeException("user not presetnt")));
+    }
+}
