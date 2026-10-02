@@ -90,6 +90,8 @@ interface MyInterface {
 }
 ```
 
+Default and static methods do not count as abstract methods, and public methods matching Object methods are ignored when determining whether an interface is functional.
+
 Methods inherited from `Object` (`toString()`, `equals()`, `hashCode()`) do **not** count toward the abstract method count.
 
 ---
