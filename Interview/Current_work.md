@@ -7,6 +7,38 @@ Module 1 — Product-Specific Financial Onboarding
 18-Minute Interview Preparation
 
 
+1-Minute Interview Answer — Data Security
+
+For sensitive financial and customer data, I would secure the application at multiple layers.
+
+Client
+  ↓ HTTPS / TLS
+API Gateway
+  ↓ Authentication + Authorization
+Spring Boot Service
+  ↓
+Business Logic
+  ↓
+Database
+  ↓ Encryption at Rest
+
+At the network level, I use HTTPS/TLS so data is encrypted in transit.
+
+At the application level, Spring Security with OAuth2/JWT or the organization's IAM handles authentication and authorization. I also follow least privilege, so users and services get only the permissions they actually need.
+
+For sensitive database fields such as identity information, we use appropriate encryption at rest, with encryption keys managed through a secure key/secrets-management system.
+
+For logging, I never log OTPs, passwords, access tokens or unnecessary PII. I log safe identifiers such as "applicationId" and "correlationId", and mask sensitive fields when required.
+
+For error handling, I return generic error messages to the client and keep detailed technical information internally using the correlation ID.
+
+Finally, important operations such as accessing or modifying KYC/customer data should be captured in an audit trail, while database credentials, API keys and certificates should never be hardcoded and should come from secure secrets management.
+
+So the overall approach is:
+
+TLS → Authentication → Authorization → Least Privilege → Encryption → Secure Logging → Error Handling → Audit Trail → Secrets Management.
+
+
 ---
 
 0. Sabse pehle — module ko ek line mein samjho
