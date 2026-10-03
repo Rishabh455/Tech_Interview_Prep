@@ -570,3 +570,258 @@ API
        Result + State
 
 बस इस flow को confidently explain कर पाओ, तो Story 2 के लगभग सारे follow-ups इसी से derive हो जाएंगे।
+
+
+हाँ, तुम्हारा counter वाला example भी race condition ही है, लेकिन race condition सिर्फ “same time पर update” होने तक limited नहीं है। इसका broader meaning है:
+
+> जब दो concurrent operations का result इस बात पर depend करे कि उनके बीच execution का timing/order क्या रहा।
+
+
+
+अब तुम्हारे idempotency वाले case को exactly flow से समझो।
+
+1. Initially DB में कोई row नहीं है
+
+मान लो:
+
+idempotency_key = K123
+
+और दो requests same business operation के लिए एक साथ आ गईं:
+
+Request A → K123
+Request B → K123
+
+DB initially:
+
+No record for K123
+
+
+---
+
+2. दोनों requests पहले check करती हैं
+
+Code कुछ ऐसा कर सकता है:
+
+if (!repository.existsByIdempotencyKey("K123")) {
+    repository.save(...);
+}
+
+अब timing देखो:
+
+Time →
+
+Request A                  Request B
+   |                           |
+   |-- SELECT K123 ----------> |
+   |                           |
+   |      NOT FOUND            |
+   |                           |
+   |                           |-- SELECT K123
+   |                           |   NOT FOUND
+   |                           |
+   |-- INSERT K123             |
+   |                           |
+   |                           |-- INSERT K123
+
+यही race condition है।
+
+क्यों?
+
+क्योंकि दोनों threads ने अपना decision same shared state के basis पर लिया, लेकिन बीच में दूसरे thread ने state बदल दी।
+
+A ने पूछा:
+
+> “K123 already exists?”
+
+
+
+Answer: No
+
+B ने भी पूछा:
+
+> “K123 already exists?”
+
+
+
+Answer: No
+
+फिर दोनों ने decide किया:
+
+> “ठीक है, मैं insert कर सकता हूँ।”
+
+
+
+लेकिन ideally हमें एक ही logical operation की एक ही record चाहिए।
+
+
+---
+
+3. अब UNIQUE constraint लगाते हैं
+
+DB में:
+
+UNIQUE(idempotency_key)
+
+अब same situation:
+
+Request A → INSERT K123 → SUCCESS ✅
+
+Request B → INSERT K123 → FAIL ❌
+                         UNIQUE constraint violation
+
+Database कहता है:
+
+> “K123 already exists. दूसरा record नहीं बना सकता।”
+
+
+
+इसलिए DB final protection देता है।
+
+
+---
+
+4. यहाँ तुम्हारे counter example से difference क्या है?
+
+तुम्हारा example:
+
+counter = 1
+
+Thread A → read 1
+Thread B → read 1
+
+A → 2
+B → 2
+
+Expected → 3
+Actual   → 2
+
+यह भी race condition है क्योंकि दोनों threads ने stale value 1 पढ़ी।
+
+हमारे idempotency case में:
+
+A → check → NOT FOUND
+B → check → NOT FOUND
+
+A → INSERT
+B → INSERT
+
+यहाँ problem lost update नहीं है।
+
+यहाँ problem है:
+
+> दो concurrent requests ने एक ही initial state देखकर दोनों ने operation proceed कर दिया।
+
+
+
+इसलिए race condition के अलग-अलग forms हो सकते हैं:
+
+Case	Race condition
+
+Counter	Lost update
+Idempotency	Duplicate creation
+Inventory	Overselling
+Bank balance	Incorrect concurrent update
+Booking	Two users getting same seat
+
+
+
+---
+
+अब सबसे important: "Row ही नहीं है तो Optimistic Locking कैसे?"
+
+यही key point है।
+
+Suppose:
+
+K123 → कोई row नहीं
+
+Optimistic locking normally काम करता है:
+
+Existing row
+      ↓
+version = 5
+      ↓
+A reads version 5
+B reads version 5
+      ↓
+A updates → version 6
+B tries version 5 → FAIL
+
+लेकिन हमारे initial case में:
+
+K123 → NO ROW
+
+तो:
+
+> Optimistic locking के लिए version ही नहीं है।
+
+
+
+इसलिए initial creation race को handle करने के लिए:
+
+UNIQUE(idempotency_key)
+
+use करते हैं।
+
+फिर row create हो जाने के बाद:
+
+id | idempotency_key | status     | version
+-------------------------------------------
+1  | K123            | PROCESSING | 1
+
+अब concurrent updates के लिए:
+
+Optimistic Locking
+        ↓
+@Version
+        ↓
+version = 1 → 2
+
+
+---
+
+पूरा flow याद रखो
+
+Request A ─────┐
+               ├── Same Idempotency Key K123
+Request B ─────┘
+                 ↓
+          Check existing record
+                 ↓
+          No record exists
+                 ↓
+       Both try to INSERT
+                 ↓
+       ┌───────────────────┐
+       │ UNIQUE constraint │
+       └───────────────────┘
+          ↓             ↓
+       A SUCCESS      B FAILS
+                         ↓
+                Fetch existing record
+                         ↓
+                Return current result
+
+और row बनने के बाद:
+
+Existing Row
+     ↓
+version = 1
+     ↓
+Concurrent Updates
+     ↓
+Optimistic Locking
+     ↓
+Only valid/latest update succeeds
+
+Interview में killer answer:
+
+> “Race condition here is not a lost-update problem. It is a check-then-act race. Two concurrent requests can both check that the idempotency key doesn't exist and then both try to create the record. A database UNIQUE constraint makes the creation atomic from a data-integrity perspective, allowing only one request to create the record. Once the row exists, optimistic locking can protect subsequent concurrent updates.”
+
+
+
+बस यह distinction याद रखो:
+
+No row → UNIQUE constraint → duplicate creation protection
+
+Existing row → @Version → concurrent update protection
