@@ -1,0 +1,228 @@
+# Java 8 features — simple interview notes
+
+Java 8 was a major release because it introduced functional programming features such as Lambda Expressions, Functional Interfaces, and the Stream API.
+
+Unlike Java 17, Java 8 features are generally discussed as features introduced in that release, rather than preview versus final features.
+
+## 1. Important Java 8 features
+
+| #  | Feature                      | Easy meaning                                                         |
+| -- | ---------------------------- | -------------------------------------------------------------------- |
+| 1  | Lambda Expressions           | Write shorter implementations of functional interfaces.              |
+| 2  | Functional Interfaces        | An interface with exactly one abstract method.                       |
+| 3  | Stream API                   | Filter, sort, transform and process collections.                     |
+| 4  | Method References            | Refer to an existing method using `::`.                              |
+| 5  | Default Methods              | Add a method implementation inside an interface.                     |
+| 6  | Static Methods in Interfaces | Define utility methods inside an interface.                          |
+| 7  | Optional                     | Represent a value that may be absent.                                |
+| 8  | New Date and Time API        | Use modern classes such as `LocalDate` and `LocalDateTime`.          |
+| 9  | CompletableFuture            | Compose asynchronous operations.                                     |
+| 10 | Collectors                   | Gather stream results into lists, maps, groups, and more.            |
+| 11 | forEach()                    | Process elements using an action or lambda.                          |
+| 12 | Map API enhancements         | Methods such as `computeIfAbsent()`, `merge()` and `getOrDefault()`. |
+
+## 2. Simple examples to remember
+
+### 1. Lambda Expression
+
+Short way to write an implementation.
+
+```
+Runnable r = () -> System.out.println("Hello");
+```
+
+Memory trick: Lambda = shorter code using `->`.
+
+### 2. Functional Interface
+
+An interface with exactly one abstract method.
+
+```
+@FunctionalInterface
+interface Calculator {
+    int add(int a, int b);
+}
+
+Calculator c = (a, b) -> a + b;
+System.out.println(c.add(2, 3)); // 5
+```
+
+Memory trick: One abstract method → lambda can implement it.
+
+### 3. Stream API
+
+Process collection data without writing explicit loops for every operation.
+
+```
+List<Integer> nums = List.of(1, 2, 3, 4, 5);
+
+nums.stream()
+    .filter(n -> n % 2 == 0)
+    .forEach(System.out::println);
+```
+
+Output: `2`, `4`
+
+Memory trick: Stream = filter, transform, process.
+
+### 4. Method Reference
+
+Use an existing method instead of writing a lambda that calls it.
+
+```
+nums.forEach(System.out::println);
+```
+
+Equivalent to:
+
+```
+nums.forEach(n -> System.out.println(n));
+```
+
+Memory trick: `::` means method reference.
+
+### 5. Default and Static Methods in Interfaces
+
+Default method has an implementation; static method belongs to the interface itself.
+
+```
+interface Vehicle {
+    default void start() {
+        System.out.println("Starting");
+    }
+
+    static void info() {
+        System.out.println("Vehicle");
+    }
+}
+```
+
+Usage:
+
+```
+Vehicle.info();
+```
+
+Memory trick: `default` → inherited instance behavior; `static` → call using interface name.
+
+### 6. Optional
+
+Represents a value that might be absent.
+
+```
+Optional<String> name = Optional.ofNullable(null);
+
+System.out.println(name.orElse("Unknown"));
+```
+
+Output: `Unknown`
+
+Memory trick: Optional = value may or may not exist.
+
+### 7. New Date and Time API
+
+Modern classes for handling dates and times.
+
+```
+LocalDate date = LocalDate.now();
+LocalTime time = LocalTime.now();
+LocalDateTime dateTime = LocalDateTime.now();
+```
+
+Memory trick: `LocalDate` = date, `LocalTime` = time, `LocalDateTime` = both.
+
+### 8. CompletableFuture
+
+Supports asynchronous tasks and combining their results.
+
+```
+CompletableFuture.supplyAsync(() -> "Hello")
+    .thenApply(s -> s + " Java")
+    .thenAccept(System.out::println);
+```
+
+Output: `Hello Java`
+
+Memory trick: `supplyAsync()` produces a result; `thenApply()` transforms it; `thenAccept()` consumes it.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://docs.oracle.com\&sz=32)
+
+Oracle Docs
+
+
+
+### 9. Collectors
+
+Collect stream results into a collection or another result.
+
+```
+List<Integer> even = nums.stream()
+    .filter(n -> n % 2 == 0)
+    .collect(Collectors.toList());
+```
+
+Result: `[2, 4]`
+
+Memory trick: `collect()` gathers results.
+
+### 10. Map API enhancements
+
+New methods make map operations easier.
+
+```
+Map<String, Integer> map = new HashMap<>();
+
+map.putIfAbsent("A", 10);
+map.getOrDefault("B", 0);
+map.merge("A", 5, Integer::sum);
+```
+
+After these operations, `A` maps to `15`, and `B` returns the default value `0`.
+
+Memory trick: `putIfAbsent` = add if missing; `getOrDefault` = fallback; `merge` = combine values.
+
+### 11. `forEach()`
+
+Perform an action for each element.
+
+```
+List<String> names = List.of("Amit", "Ravi");
+
+names.forEach(name -> System.out.println(name));
+```
+
+Memory trick: `forEach()` = action on every element.
+
+### 12. Other Java 8 features worth knowing
+
+- Repeating annotations: Apply the same annotation more than once.
+- Type annotations: Apply annotations to type usages.
+- Base64 API: Encode and decode Base64 data.
+- Nashorn JavaScript engine: Run JavaScript through a Java-provided engine (later removed in Java 15).
+- PermGen removal: Removed the old Permanent Generation memory area; class metadata moved to native memory via Metaspace.
+
+These are documented in Oracle's [Java 8 release notes](https://www.oracle.com/java/technologies/javase/8-whats-new.html).&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://www.oracle.com\&sz=32)
+
+Oracle
+
++2
+
+
+
+## 3. Easy memory trick for interviews
+
+Remember these first:
+
+L F S M D O C
+
+- L — Lambda
+- F — Functional interfaces
+- S — Stream API
+- M — Method references
+- D — Default/static interface methods
+- O — Optional
+- C — CompletableFuture
+
+Then revise the Date/Time API, Collectors, Map enhancements, and the other changes.

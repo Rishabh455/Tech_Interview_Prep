@@ -227,6 +227,61 @@ You can still monitor or control a Runnable using other mechanisms.
 ---
 
 # 6. ExecutorService
+### ExecutorService
+
+`ExecutorService` is a Java interface used to **manage and execute multiple tasks using a pool of threads**.
+
+Instead of creating threads manually, we can submit tasks to an `ExecutorService`, and it manages the threads for us.
+
+### Example
+
+```java
+ExecutorService executor = Executors.newFixedThreadPool(3);
+
+executor.submit(() -> {
+    System.out.println("Task is running");
+});
+
+executor.shutdown();
+```
+
+### Common methods
+
+| Method           | Meaning                                |
+| ---------------- | -------------------------------------- |
+| `submit()`       | Submit a task for execution            |
+| `execute()`      | Execute a `Runnable` task              |
+| `shutdown()`     | Stop accepting new tasks               |
+| `shutdownNow()`  | Attempt to stop running tasks          |
+| `isShutdown()`   | Checks whether executor is shut down   |
+| `isTerminated()` | Checks whether all tasks are completed |
+
+### Common types of thread pools
+
+```java
+Executors.newFixedThreadPool(3);
+```
+
+Creates a pool with **3 threads**.
+
+```java
+Executors.newSingleThreadExecutor();
+```
+
+Creates a pool with **one thread**.
+
+```java
+Executors.newCachedThreadPool();
+```
+
+Creates/reuses threads dynamically.
+
+### Simple interview answer
+
+> **ExecutorService is a Java interface that provides a framework for managing a pool of threads and executing tasks asynchronously. It reduces the need to create and manage threads manually.**
+
+**Example:** If we have 100 tasks, instead of creating 100 threads, we can create a pool of 5 threads and let `ExecutorService` manage the execution.
+
 
 ## Q7. What is ExecutorService?
 

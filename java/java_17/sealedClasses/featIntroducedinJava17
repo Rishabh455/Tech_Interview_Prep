@@ -1,0 +1,83 @@
+You're asking specifically for features newly introduced in Java 17 that are final (not preview or incubator) — not features from older versions that also work in Java 17.
+
+According to Oracle's Java 17 release notes, these are the key ones to learn.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://www.oracle.com\&sz=32)
+
+oracle.com
+
++1
+
+
+
+## Java 17: new features that are not preview
+
+| Feature                                                     | Simple explanation                                                                  |
+| ----------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| 1. Sealed Classes (JEP 409)                                 | Restrict which classes can extend a class or implement an interface.                |
+| 2. Enhanced Pseudo-Random Number Generators (JEP 356)       | Provide a common API for different random-number algorithms.                        |
+| 3. Restore Always-Strict Floating-Point Semantics (JEP 306) | Make floating-point calculations consistently follow strict rules across platforms. |
+| 4. Strongly Encapsulate JDK Internals (JEP 403)             | Restrict access to internal JDK APIs that applications shouldn't rely on.           |
+| 5. Context-Specific Deserialization Filters (JEP 415)       | Allow applications to choose deserialization filters based on the context.          |
+
+The first four are major Java 17 changes; the fifth is a library/security enhancement introduced in the same release.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://www.oracle.com\&sz=32)
+
+oracle.com
+
++1
+
+
+
+### 1. Sealed Classes — most important for interviews
+
+```
+sealed class Vehicle permits Car, Bike {}
+
+final class Car extends Vehicle {}
+final class Bike extends Vehicle {}
+```
+
+Only the permitted classes can directly extend `Vehicle`.
+
+### 2. Enhanced Random Number Generation
+
+```
+import java.util.random.RandomGenerator;
+
+RandomGenerator random = RandomGenerator.getDefault();
+System.out.println(random.nextInt(100));
+```
+
+This generates an integer from `0` to `99`. Java 17 provides a common API for different random-number generators.
+
+### 3. Always-Strict Floating-Point Semantics
+
+Floating-point operations now consistently follow strict semantics. This does not eliminate rounding errors in decimal calculations.
+
+### 4. Strong Encapsulation of JDK Internals
+
+Java prevents applications from casually accessing unsupported internal APIs. Prefer documented public APIs instead.
+
+### 5. Context-Specific Deserialization Filters
+
+Applications can configure filters to control which classes or objects are allowed during deserialization, improving security.
+
+## What to exclude
+
+- Pattern Matching for `switch` — preview in Java 17.
+- Foreign Function and Memory API — incubator in Java 17.
+- Vector API — incubator in Java 17.
+
+One important distinction: Sealed Classes were previewed in Java 15 and 16, but became final in Java 17.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://www.oracle.com\&sz=32)
+
+oracle.com
+
++1
+
+
+
+For interview revision, prioritize Sealed Classes, then understand the other changes at a high level.
