@@ -99,19 +99,55 @@ git config --global user.email "rishabhchourasia858@gmail.com"# Java Full Stack 
 - **COLL-032** — What is the difference between final, finally and finalize()?
 
 ## Multithreading & Concurrency
+- **OPEN Link** https://dev.to/krishna7852/50-interview-questions-on-multithreading-with-answers-2f8n
+# Java Multithreading & Concurrency — Interview Questions
+
+## Core Concepts & Thread Basics
 
 - **CONC-001** — Explain multithreading and concurrency in Java.
-- **CONC-002** — What is the difference between synchronized, volatile and locks?
-- **CONC-003** — What is the difference between synchronized and ReentrantLock?
-- **CONC-004** — What is the difference between Runnable and Callable?
-- **CONC-005** — What is the difference between start() and run()?
-- **CONC-006** — What is the difference between wait() and sleep()?
-- **CONC-007** — What is synchronization in Java?
-- **CONC-008** — Multiple threads are updating shared data incorrectly. How would you fix it?
-- **CONC-009** — How would you handle high concurrency safely?
-- **CONC-010** — A thread is stuck in BLOCKED state. How would you identify and fix it?
-- **CONC-011** — You detect a deadlock in your system. How would you detect and resolve it?
-- **CONC-012** — Your thread pool gets exhausted under load. What is your approach?
+- **CONC-002** — What is the difference between a Process, Thread, and Task in Java?
+- **CONC-003** — What is the difference between `start()` and `run()`?
+- **CONC-004** — What is the difference between `Runnable` and `Callable`?
+- **CONC-005** — What is the difference between `wait()` and `sleep()`?
+
+## Synchronization & Thread Safety
+
+- **CONC-006** — What is synchronization in Java, and why is it required?
+- **CONC-007** — What is the difference between a synchronized method, synchronized block, and `Lock`?
+- **CONC-008** — How does `synchronized` work internally? What happens when multiple threads compete for the same monitor?
+- **CONC-009** — What is the difference between `synchronized`, `volatile`, and explicit locks?
+- **CONC-010** — What is the difference between `synchronized` and `ReentrantLock`? When would you prefer `ReentrantLock`?
+- **CONC-011** — Why is `volatile` not sufficient for thread-safe operations like `count++`?
+- **CONC-012** — What is a race condition? How would you identify and fix one in production?
+- **CONC-013** — Multiple threads are updating shared data incorrectly. How would you fix the issue?
+- **CONC-014** — How would you handle high concurrency safely in a Java application?
+
+## Concurrent Collections & Atomic Operations
+
+- **CONC-015** — How does `ConcurrentHashMap` achieve thread safety internally?
+- **CONC-016** — What is the difference between `Collections.synchronizedMap()` and `ConcurrentHashMap`?
+- **CONC-017** — What is the difference between `AtomicInteger` and a counter protected by `synchronized`?
+
+## ExecutorService & Thread Pools
+
+- **CONC-018** — What is `ExecutorService`, and why should we use thread pools?
+- **CONC-019** — What is the difference between `execute()` and `submit()`?
+- **CONC-020** — How do you size thread pools for CPU-bound versus I/O-bound workloads?
+- **CONC-021** — What happens when too many threads are created? How would you troubleshoot thread exhaustion?
+- **CONC-022** — Your thread pool gets exhausted under load. How would you identify the bottleneck and resolve it?
+
+## Asynchronous Programming & Coordination
+
+- **CONC-023** — What is the difference between `Future`, `FutureTask`, and `CompletableFuture`?
+- **CONC-024** — What is the difference between `thenApply()`, `thenCompose()`, `thenCombine()`, and `allOf()`?
+- **CONC-025** — What is the difference between `CountDownLatch`, `CyclicBarrier`, and `Semaphore`? Explain real-world use cases.
+- **CONC-026** — How would you execute multiple microservice/API calls concurrently using `CompletableFuture` and `ExecutorService`?
+
+## Deadlocks & Thread Troubleshooting
+
+- **CONC-027** — What is a deadlock? How would you detect, troubleshoot, and resolve it?
+- **CONC-028** — A thread is stuck in the `BLOCKED` state. How would you identify the cause and fix it?
+- **CONC-029** — What are `ReadWriteLock` and `ReentrantReadWriteLock`, and when would you use them?
 
 ## JVM, Memory, GC & Production Troubleshooting
 
