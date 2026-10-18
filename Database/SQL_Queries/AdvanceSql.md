@@ -8,14 +8,19 @@
 
 ```sql
 WITH cte AS (
-  SELECT emp_id, emp_name, dept, salary,
-    ROW_NUMBER() OVER (
-      PARTITION BY emp_name, dept, salary
-      ORDER BY emp_id
-    ) AS rn
-  FROM employees
+    SELECT emp_id,
+           ROW_NUMBER() OVER (
+               PARTITION BY emp_name, department, salary
+               ORDER BY emp_id
+           ) AS rn
+    FROM Employee
 )
-DELETE FROM cte WHERE rn > 1;
+DELETE FROM Employee
+WHERE emp_id IN (
+    SELECT emp_id
+    FROM cte
+    WHERE rn > 1
+);
 ```
 
 > **Key concept:** ROW_NUMBER() assigns unique row number to each duplicate — keep rn=1, delete rest. Works in SQL Server/PostgreSQL.

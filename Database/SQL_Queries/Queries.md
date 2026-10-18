@@ -25,7 +25,26 @@ INSERT INTO Employee VALUES
 (107,'Sneha','HR',55000,102,'2020-11-05','Delhi'),
 (108,'Rohit','Sales',65000,109,'2022-08-18','Mumbai'),
 (109,'Megha','Sales',95000,NULL,'2017-12-30','Pune'),
-(110,'Vikas','IT',75000,103,'2021-06-11','Hyderabad');
+(110,'Vikas','IT',75000,103,'2021-06-11','Hyderabad'),
+
+-- Duplicate Name + Department + Salary
+(111,'Amit','IT',80000,103,'2022-01-10','Pune'),
+(112,'Rahul','HR',50000,107,'2023-04-15','Mumbai'),
+(113,'Neha','IT',90000,106,'2022-07-20','Delhi'),
+(114,'Priya','Finance',70000,105,'2023-08-12','Pune'),
+(115,'Karan','Finance',120000,NULL,'2021-09-25','Mumbai'),
+(116,'Ankit','IT',80000,110,'2024-01-05','Mumbai'),
+(117,'Sneha','HR',55000,102,'2022-12-01','Pune'),
+(118,'Rohit','Sales',65000,109,'2023-03-18','Delhi'),
+(119,'Megha','Sales',95000,NULL,'2020-10-30','Mumbai'),
+(120,'Vikas','IT',75000,103,'2024-06-11','Pune'),
+
+-- Additional duplicate combinations
+(121,'Amit','IT',80000,106,'2023-05-15','Delhi'),
+(122,'Rahul','IT',80000,101,'2024-02-20','Bangalore'),
+(123,'Neha','IT',80000,103,'2023-11-10','Mumbai'),
+(124,'Priya','HR',55000,107,'2024-04-25','Delhi'),
+(125,'Karan','Finance',100000,105,'2022-09-01','Pune');
 ```
 
 ---
