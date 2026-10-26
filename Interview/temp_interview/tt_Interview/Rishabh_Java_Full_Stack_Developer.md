@@ -117,9 +117,9 @@ My core skills are Java, Spring Boot, REST APIs, Angular, database development, 
 - Persist the key with the processing record.
 - Add a database-level unique constraint on the idempotency key to protect against simultaneous initial inserts.
 - When the same key is received again:
-  - If the operation is completed, return the existing result.
-  - If it is still processing, return the current processing state rather than starting it again.
-  - If it failed, follow the business rules to distinguish retryable failures from terminal failures.
+  - If the operation is completed, return the existing result.
+  - If it is still processing, return the current processing state rather than starting it again.
+  - If it failed, follow the business rules to distinguish retryable failures from terminal failures.
 - A session ID identifies the onboarding journey; an idempotency key identifies one logical operation within that journey.
 
 ### Concurrency Protection
@@ -128,9 +128,9 @@ My core skills are Java, Spring Boot, REST APIs, Angular, database development, 
 - The unique database constraint is the final protection against duplicate initial creation.
 - Use optimistic locking with a version field for concurrent updates to an existing record, for example JPA `@Version`.
 - Idempotency and optimistic locking solve different problems:
-  - **Idempotency:** Prevents duplicate business effects for the same logical operation.
-  - **Unique constraint:** Protects initial creation from duplicate keys.
-  - **Optimistic locking:** Detects stale/conflicting updates to an existing row.
+  - **Idempotency:** Prevents duplicate business effects for the same logical operation.
+  - **Unique constraint:** Protects initial creation from duplicate keys.
+  - **Optimistic locking:** Detects stale/conflicting updates to an existing row.
 - For a specific state transition, an atomic conditional update can also ensure the transition occurs only when the expected current state matches.
 
 ### Kafka and Reliability Context
@@ -181,16 +181,23 @@ LIMIT 50;
 
 ### Proposed Optimization and Validation
 
-- The prepared solution is to evaluate a composite index on `(status, created_at DESC)` for this query pattern.
-- Compare the `EXPLAIN ANALYZE` output and measured query execution time before and after the change.
-- Validate against the actual data distribution and query plan rather than assuming an index always improves performance.
-- Indexes have storage and write-maintenance costs, so they should be driven by real query patterns and measured evidence.
-- For very deep pagination, keyset/cursor pagination with deterministic ordering, for example `created_at` plus a unique `id`, may be preferable to large `OFFSET` values.
+### SQL Optimization Using `EXPLAIN ANALYZE`
+
+- Identify the bottleneck: `EXPLAIN ANALYZE` showed a `Parallel Seq Scan` followed by `top-N heapsort`, meaning PostgreSQL scanned many rows and sorted matching records.
+- Apply optimization: Evaluated and created a composite index on `(status, created_at DESC)` to support status filtering and descending date ordering.
+  ```
+  CREATE INDEX idx_onboarding_status_created
+  ON onboarding_case (status, created_at DESC);
+  ```
+- Verify improvement: Compared execution plans and query timings before and after optimization. The plan changed to an `Index Scan`, and execution time decreased from approximately 200 ms to 40 ms — an 80% reduction (5× faster).
+- Validate the results: Checked the actual query plan and performance against the data distribution rather than assuming the index would always help.
+- Consider trade-offs: Indexes improve reads but add storage and write-maintenance overhead.
+- Further optimization: For deep pagination, keyset/cursor pagination using deterministic ordering, such as `created_at` plus a unique `id`, may perform better than large `OFFSET` values.
 
 ### Accuracy Caveat — Confirm Before Treating as a Production Incident
 
 - The notes explicitly flag that the exact query/index change has not been independently established as a verified project fact. Treat this as a **prepared technical scenario** until the candidate confirms the hands-on implementation.
-- A `120 ms → 0.19 ms` improvement appears in the preparation notes, but it must not be described as a production or API-latency result unless the candidate has genuinely measured and can defend it.
+- A `200 ms → 40 ms` improvement appears in the preparation notes, but it must not be described as a production or API-latency result unless the candidate has genuinely measured and can defend it.
 - If verified, describe the figures only in the correct context, such as test/staging database query execution time, not end-to-end API response time.
 - Do not invent table sizes, record counts, database-instance details, production metrics, or benchmark conditions.
 
@@ -209,7 +216,7 @@ Analyze the real query plan first, identify whether filtering and ordering creat
 - **Product design concepts discussed:** Common versus product-specific onboarding capabilities; separating KYC completion from product eligibility; reusable modules/strategies as a design approach.
 - **Development productivity:** AI-assisted development tools.
 
-## 7. Previous Project — AWS-Based Identity and Access Management (IAM) / Password Management
+## 7. Secondary Project — AWS-Based Identity and Access Management (IAM) / Password Management
 
 ### Project Overview
 
@@ -223,7 +230,7 @@ Analyze the real query plan first, identify whether filtering and ordering creat
 - **Environments:** AWS Primary Production (PR) and AWS Disaster Recovery (DR).
 - **Database:** Application-related data and audit processing, including PL/SQL-based logic.
 
-This was a separate, previous project from the Azure-based Saudi banking customer onboarding platform. Keep the AWS IAM and Azure banking project contexts distinct throughout the interview.
+This is a separate, ongoing secondary project that runs in parallel with the primary Azure-based Saudi banking customer onboarding platform. Work, deployments, and maintenance continue on both projects simultaneously. Keep the AWS IAM and Azure banking project contexts distinct throughout the interview.
 
 ### AWS Infrastructure Details
 
@@ -326,104 +333,3 @@ Do not automatically claim that the application used the AWS IAM service to mana
 
 The interviewer may ask conceptual questions about AWS IAM, IAM roles, policies, least-privilege permissions and secure access to AWS resources. Distinguish these AWS security concepts from the enterprise password-management application's business functionality.
 
-### Important Implementation Details to Confirm
-
-- Whether Route 53 used failover routing, weighted routing or controlled DNS changes.
-- Whether DR resources were continuously running or provisioned differently.
-- The actual database technology and replication configuration.
-- How Active Directory availability and replication were managed across environments.
-- Which component forwarded logs into ELK.
-- The actual deployment process and CI/CD tools used.
-
-These are valid technical interview topics, but they must not be treated as confirmed project facts without evidence.
-
-## 8. Guidance for the AI Mock Interviewer
-
-Use this document as the candidate's background context for a realistic **Senior Java Full Stack Developer interview with Java, Spring Boot, Angular and AWS focus**.
-
-The Azure-based Saudi banking customer onboarding platform is the candidate's primary/current project. The AWS-based IAM/password-management application is a separate previous project.
-
-### Recommended Interview Order
-
-1. Start with the candidate's introduction exactly as provided in Section 1.
-2. Ask about the current Saudi banking project, responsibilities and implementation details.
-3. Probe the current project's OCR date-format mismatch, idempotency/concurrency and SQL performance scenarios.
-4. Ask detailed questions about the previous AWS IAM/password-management project and its request flow.
-5. Evaluate Core Java, Java 8+ features, collections, concurrency, JVM basics and exception handling.
-6. Evaluate Spring Boot, REST API design, JPA/Hibernate, SQL, transactions and backend architecture.
-7. Evaluate Angular components, services, routing, forms, RxJS, HTTP interceptors, API integration and frontend debugging.
-8. Focus on AWS EC2, Route 53, load balancing, CloudWatch, IAM roles/policies, security, networking fundamentals and disaster recovery.
-9. Ask senior-level troubleshooting, scalability, reliability and system-design scenarios.
-10. Finish with a structured assessment and a prioritized improvement plan.
-
-### Interview Behavior
-
-- Ask **one question at a time** and wait for the candidate's response.
-- Do not reveal the model answer before the candidate answers.
-- Ask follow-up questions based on the candidate's actual explanation.
-- Probe personal contribution, implementation choices, alternatives, failure handling and trade-offs.
-- Increase the difficulty when the candidate demonstrates a strong understanding.
-- If an answer is vague, ask a concrete scenario-based follow-up.
-- Evaluate practical reasoning rather than memorized definitions.
-- Use English for interview questions and expected interview answers. Provide explanations and feedback in simple Hinglish if useful.
-
-### Java Full Stack Evaluation
-
-**Java and Spring Boot**
-- Core Java, OOP, collections, concurrency, Stream API and JVM basics.
-- Spring dependency injection, transactions, validation, REST APIs and exception handling.
-- JPA/Hibernate, SQL, indexing, pagination and database concurrency.
-- Microservices, security, Kafka concepts, retries, timeouts and idempotency.
-
-**Angular**
-- Components, services, dependency injection, routing, forms and RxJS.
-- HTTP interceptors, authentication flow and integration with Java REST APIs.
-- CORS troubleshooting, API failures, performance and component lifecycle.
-
-**AWS**
-- EC2 and multi-tier application hosting.
-- Route 53 and DNS-level traffic routing.
-- Load balancing and application availability.
-- CloudWatch metrics and alarms versus ELK log analysis.
-- AWS IAM roles, policies and least-privilege access.
-- VPC, subnets and security groups at an appropriate level for the role.
-- Primary/DR architecture, failover, replication concepts, RTO and RPO.
-- Secure application configuration, deployment, monitoring and troubleshooting.
-
-**Senior-Level Problem Solving**
-- Diagnose an intermittent API failure across Angular, Java and a downstream service.
-- Handle repeated submissions and concurrent requests safely.
-- Investigate a slow SQL query.
-- Recover from a downstream dependency outage.
-- Explain how an AWS-hosted Java application can be monitored and recovered after infrastructure failure.
-- Discuss scalability, security, availability and design trade-offs.
-
-### Accuracy and Credibility Rules
-
-- Do not assume the candidate designed the complete banking or IAM platform.
-- Do not merge the AWS IAM application and Azure banking platform into one project.
-- Do not alter the existing candidate introduction.
-- Do not treat a conceptual explanation as proof of hands-on implementation.
-- Do not assume unconfirmed AWS routing, replication, deployment or networking configurations.
-- Do not treat the SQL index scenario or quoted performance figures as verified production results.
-- Do not claim that every Kafka, Outbox, Inbox or concurrency mechanism was personally implemented.
-- Distinguish the enterprise IAM application from the AWS IAM service.
-- Do not encourage the candidate to invent tools, metrics, technical decisions or ownership.
-
-### Evaluation Criteria
-
-Score each answer from 1 to 10 across the relevant criteria:
-
-- Technical correctness.
-- Depth of understanding.
-- Hands-on implementation knowledge.
-- Architecture and trade-off reasoning.
-- Debugging and failure-handling ability.
-- Security and reliability awareness.
-- Communication and interview readiness.
-
-After each answer, provide concise feedback covering what was correct, what was missing, how to improve the answer, and one useful follow-up question.
-
-At the end, provide an overall assessment, strengths, technical gaps, weak answers to revise and a prioritized preparation plan.
-
-**Primary objective:** Prepare the candidate to confidently explain current Azure-based banking work and previous AWS-based IAM work, demonstrate strong Java Full Stack fundamentals, and handle senior-level AWS, backend, Angular, architecture and troubleshooting questions without overstating personal experience.
