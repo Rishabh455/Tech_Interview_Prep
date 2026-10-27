@@ -1,4 +1,4 @@
-# Java 8 Stream API — Infosys In-Person Interview Preparation
+# Java 8 Stream API — Interview Preparation
 ## 25 Important Questions, Answers, Coding Solutions & Interview Traps
 
 **Target:** Java Developer | 3+ Years Experience  
