@@ -577,13 +577,11 @@ Q2. What would you do if another developer introduced a bug in code you reviewed
 
 Answer:
 
-“TCS has given me valuable experience working on enterprise applications, backend development, external integrations and production support. I have developed a stronger understanding of how real-world banking workflows need to handle validation, data integrity, security and operational issues.
+“TCS is my first company, and I’m really grateful for the learning and experience I’ve gained here. I’ve learned backend development, production issue resolution, and how to work with different teams. This experience has also improved my technical and communication skills.
 
-At this stage of my career, I am looking for a role that allows me to deepen my Java backend skills while continuing to work with full-stack technologies and cloud-based deployments.
+Now, I’m looking for the next step in my career, with better learning opportunities and career growth. The role at Infosys matches my skills and interests, and I believe it will help me improve my technical knowledge and take on more responsibilities.
 
-The Infosys role interests me because it aligns with my experience in Java, Spring Boot, Angular and AWS exposure. I would like to contribute my existing application-development and troubleshooting skills while learning more and taking on greater technical responsibility.
-
-My decision is based on professional growth and the responsibilities of the new role, not on dissatisfaction with my current employer.”
+That’s why I’m looking forward to this opportunity at Infosys.”
 
 ### Likely cross-questions
 
@@ -603,15 +601,11 @@ Q3. What if the project requires you to learn a different technology?
 
 Answer:
 
-“I believe I bring a useful combination of backend development, full-stack integration and practical production troubleshooting.
+“I believe I’m a good fit for this role because I have over three years of experience in Java development at TCS, working with Java, Spring Boot, REST APIs, databases and Angular.
 
-I have over three years of enterprise application experience at TCS, working with Java, Spring Boot, REST APIs, Spring Security, JPA/Hibernate, PostgreSQL and Angular. My work includes implementing multi-step banking onboarding functionality, integrating external services, validating data, writing tests and supporting production releases.
+I have experience in backend development, API integration, production issue resolution and SQL optimization. I’ve also worked on real-world banking applications, which has helped me understand the importance of code quality and application reliability.
 
-I can also explain practical problems I have worked on, such as SQL query optimization using `EXPLAIN ANALYZE`, correcting a date-format mismatch at an integration boundary, and strengthening duplicate-processing protection with idempotency handling and a database constraint.
-
-In addition, I have AWS deployment and monitoring exposure, and I understand the importance of reliable application behaviour, communication and code quality.
-
-I would bring hands-on implementation skills, a structured debugging approach and a willingness to take greater ownership while collaborating effectively with the team.”
+I’m a quick learner, a good team player, and I’m confident that I can contribute to your team while continuing to grow technically.”
 
 ### Likely cross-questions
 
