@@ -367,13 +367,17 @@ Q2. Is 100% code coverage enough to guarantee quality?
 
 Answer:
 
-“Our work follows the SDLC and Agile delivery process. Requirements are discussed and broken into manageable tasks, and the team agrees on the scope and acceptance criteria during planning.
+Answer:
 
-During development, I track my tasks, raise dependencies early and share progress or blockers with the team. I implement the functionality, complete the relevant unit tests, support code reviews and help resolve integration or UAT defects.
+“SDLC is the complete process of developing software. Agile divides work into short periods called sprints.
 
-At the end of the sprint, we review the delivered functionality against the agreed acceptance criteria. If new information changes the estimate, I communicate the impact instead of silently allowing a commitment to slip.
+Scope means what we need to do, and acceptance criteria mean what conditions the feature must meet.
 
-My focus is to deliver working and tested functionality while keeping the team informed about risks and dependencies.”
+During sprint planning, we discuss tasks and time estimates. During the sprint, I write code, write unit tests, attend daily stand-ups, and report any problems early.
+
+At the end, we check the work and fix any bugs.
+
+My goal is to deliver good-quality work on time and inform the team early about any delays or problems.”
 
 ### Likely cross-questions
 
@@ -621,6 +625,59 @@ Q3. What would your manager say about you?
 
 “I would expect my manager to describe me as someone who takes responsibility for assigned work, investigates issues methodically and collaborates with the team to reach a resolution. I try to communicate blockers early and verify changes rather than assuming that code working locally means the task is complete.”
 
+ तुम्हें interview में इन तीनों incidents को लगभग 1 minute each में explain करना है। भाषा simple English रखो और flow याद रखो: Problem → Investigation → Root Cause → Resolution → Prevention.
+## 26. Productions issses experience and resoultion
+## 1. DNS Issue During AWS PR-DR Switching
+
+“In one production incident, users were getting intermittent HTTP 500 errors while accessing the application.
+
+I checked the application and investigated the DNS configuration using the `nslookup` command. I found that the domain was resolving to two AWS IP addresses, including an unintended DR server IP.
+
+The root cause was an incorrect DNS mapping in Route 53.
+
+We corrected the DNS mapping and removed the unintended DR endpoint. After that, the application started working normally.
+
+As a preventive measure, we verified the DNS records and validated the application after the change.
+
+This incident helped me understand the importance of correct DNS configuration during PR-DR switching.”
+
+## 2. Password Reset Failure — LDAP Error 53
+
+“In one production incident, users were unable to reset their passwords, and the password management application was failing.
+
+I checked the application logs in ELK and found LDAP Error 53. I shared the error details with the Wintel team for further investigation.
+
+They identified that some Active Directory policies and attributes had been changed, which caused the password reset failure.
+
+The Wintel team reverted those changes, and the password reset functionality started working again.
+
+After the resolution, we verified the application functionality and checked the logs.
+
+This incident taught me the importance of checking application logs and coordinating with infrastructure teams to resolve production issues.”
+
+## 3. LDAP Error 0-0 and Audit Database Connection Issue
+
+“In another production incident, users faced errors in the password management application. The frontend was showing LDAP Error 0-0.
+
+I investigated the issue and checked the application logs. We contacted Microsoft support, and they resolved the Active Directory and LDAP-related issue.
+
+However, the application was still facing problems. Further investigation revealed that the audit database had around 500 to 600 active connections, causing a database connection issue.
+
+The database team resolved the connection issue. We then verified port 8443 connectivity and restarted the application servers.
+
+Finally, we checked the application and confirmed that the service was working properly.
+
+This incident taught me to investigate issues step by step because production problems can involve multiple components.”
+
+## Quick revision before the interview
+
+| Incident          | Root cause                                 | Key technical keywords                         |
+| ----------------- | ------------------------------------------ | ---------------------------------------------- |
+| 1. DNS / PR-DR    | Incorrect DNS mapping                      | AWS Route 53, `nslookup`, HTTP 500             |
+| 2. Password reset | AD policy/attribute changes                | ELK, LDAP Error 53, Active Directory           |
+| 3. LDAP + DB      | LDAP issue followed by DB connection issue | LDAP Error 0-0, 500–600 connections, port 8443 |
+
+Interview tip: इन answers में अपनी भूमिका को investigation, log analysis, coordination और validation तक ही बताना। जहाँ Wintel, Microsoft या DB team ने actual fix किया था, वहाँ साफ बताना कि fix संबंधित team ने किया। इससे answer technically accurate और credible रहेगा।&#x20;
 # Final revision strategy
 
 Do not try to memorize all 25 answers word for word. Memorize the main answer structure and the supporting evidence.
